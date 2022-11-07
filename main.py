@@ -12,7 +12,7 @@ def main():
 
     train(hidden, config, train_loader, val_loader)
 
-    for noise in config.noiser.keys():
+    for noise in config['noiser'].keys():
         noiser_config = {
             noise: config.noiser[noise],
         }
