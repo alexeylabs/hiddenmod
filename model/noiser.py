@@ -13,6 +13,15 @@ class Identity(nn.Module):
         return noised_image
 
 
+class Flip(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, image):
+        noised_image = F.hflip(image)
+        return noised_image
+
+
 class Rotate(nn.Module):
     def __init__(self, rotation_range):
         super().__init__()
@@ -44,6 +53,8 @@ class Noiser(nn.Module):
         self.noises = []
         if 'identity' in noiser_config.keys():
             self.noises.append(Identity())
+        if 'flip' in noiser_config.keys():
+            self.noises.append(Flip())
         if 'rotate' in noiser_config.keys():
             self.noises.append(Rotate(noiser_config['rotate']))
         if 'center_crop' in noiser_config.keys():

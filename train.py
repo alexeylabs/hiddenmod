@@ -7,7 +7,7 @@ from tqdm import tqdm
 from model.discriminator import Discriminator
 from model.hidden import Hidden
 from validate import validate
-from utils import save_examples
+from utils import save_examples, save_model
 
 
 def train(hidden: Hidden, config, train_loader, val_loader):
@@ -77,11 +77,14 @@ def train(hidden: Hidden, config, train_loader, val_loader):
             adversarial_history.append(messages_loss.item())
             ber_history.append(ber.item())
 
+        print()
         print('image_distortion:  ', sum(image_distortion_history) / len(image_distortion_history))
         print('message_distortion:', sum(message_distortion_history) / len(message_distortion_history))
         print('adversarial:       ', sum(adversarial_history) / len(adversarial_history))
         print('ber:               ', sum(ber_history) / len(ber_history))
 
         print('validation_ber:    ', validate(hidden, val_loader, msg_length, device))
+        print()
 
         save_examples(encoded_images, str(epoch) + '_encoded.jpg')
+        save_model(hidden, config['experiment_name']+str(epoch)+'.pth')

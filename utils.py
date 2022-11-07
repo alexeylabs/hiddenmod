@@ -4,18 +4,19 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
 from pathlib import Path
 from torchvision.utils import save_image, make_grid
+import torch
 
 
 class ImageDataset(Dataset):
     def __init__(self, images_path, size):
         self.filenames = glob.glob(images_path + '/**/*.jpg')
         self.transforms = transforms.Compose([
-                                    transforms.Resize(size),
-                                    transforms.CenterCrop(size),
-                                    transforms.ToTensor(),
-                                    transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                                         std=[0.229, 0.224, 0.225])
-                                ])
+            transforms.Resize(size),
+            transforms.CenterCrop(size),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                 std=[0.229, 0.224, 0.225])
+        ])
 
     def __len__(self):
         return len(self.filenames)
@@ -49,5 +50,14 @@ def save_examples(images, filename):
                                                            std=[1., 1., 1.]),
                                       ])
     Path('results').mkdir(parents=True, exist_ok=True)
-    save_image(make_grid(denormalize(images)), 'results/'+filename)
+    save_image(make_grid(denormalize(images)), 'results/' + filename)
 
+
+def save_model(model, filename):
+    torch.save(model.state_dict(), filename)
+
+
+def load_model(model, filename):
+    model.load_state_dict(torch.load(filename))
+    model.eval()
+    return model
