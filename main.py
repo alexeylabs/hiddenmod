@@ -14,7 +14,7 @@ def main():
 
     for noise in config['noiser'].keys():
         noiser_config = {
-            noise: config.noiser[noise],
+            noise: config['noiser'][noise],
         }
         hidden.noiser = Noiser(noiser_config)
         validate(hidden, val_loader, config['message_length'], config['device'])
