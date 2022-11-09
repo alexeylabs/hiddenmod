@@ -17,7 +17,7 @@ def main():
             noise: config['noiser'][noise],
         }
         hidden.noiser = Noiser(noiser_config)
-        validate(hidden, val_loader, config['message_length'], config['device'])
+        print('ber: ', validate(hidden, val_loader, config['message_length'], config['device']))
 
 
 main()
