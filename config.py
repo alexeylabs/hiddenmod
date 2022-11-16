@@ -21,6 +21,7 @@ config = {'device': 'cuda:0' if torch.cuda.is_available() else 'cpu',
               'flip': None,
               'rotate': (-10, 10),
               'center_crop': (0.5, 0.9),
+              'jpeg': None,
           },
           'train': {
               'epochs': 10,

@@ -1,7 +1,9 @@
 import random
+import torch
 import torch.nn as nn
 import torchvision.transforms.functional as F
 from torchvision import transforms
+from model.jpeg import JpegCompression
 
 
 class Identity(nn.Module):
@@ -59,6 +61,9 @@ class Noiser(nn.Module):
             self.noises.append(Rotate(noiser_config['rotate']))
         if 'center_crop' in noiser_config.keys():
             self.noises.append(CenterCrop(noiser_config['center_crop']))
+        if 'jpeg' in noiser_config.keys():
+            device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+            self.noises.append(JpegCompression(device))
         print('Using noises:', self.noises)
 
     def forward(self, image):
