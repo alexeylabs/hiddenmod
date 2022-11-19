@@ -73,8 +73,8 @@ def train(hidden: Hidden, config, train_loader, val_loader):
             ber = torch.abs(messages - decoded_messages).sum() / (images.shape[0] * msg_length)
 
             image_distortion_history.append(images_loss.item())
-            message_distortion_history.append(discriminator_loss.item())
-            adversarial_history.append(messages_loss.item())
+            message_distortion_history.append(messages_loss.item())
+            adversarial_history.append(discriminator_loss.item())
             ber_history.append(ber.item())
 
         print()
