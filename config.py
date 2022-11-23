@@ -26,6 +26,8 @@ config = {'device': 'cuda:0' if torch.cuda.is_available() else 'cpu',
           'train': {
               'epochs': 10,
               'batch_size': 32,
+              'adversarial_loss_weight': 0.001,
+              'distortion_loss_weight': 0.7,
               'train_images': '/Users/alexey/data/coco_128/train',
               'val_images': '/Users/alexey/data/coco_128/val',
           }

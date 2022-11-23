@@ -23,6 +23,9 @@ def train(hidden: Hidden, config, train_loader, val_loader):
     message_distortion_criterion = nn.MSELoss().to(device)
     adversarial_criterion = nn.BCEWithLogitsLoss().to(device)
 
+    adversarial_loss_weight = config['train']['adversarial_loss_weight']
+    distortion_loss_weight = config['train']['distortion_loss_weight']
+
     hidden_optimizer = torch.optim.Adam(hidden.parameters())
     discriminator_optimizer = torch.optim.Adam(discriminator.parameters())
 
@@ -61,11 +64,13 @@ def train(hidden: Hidden, config, train_loader, val_loader):
             messages_loss = message_distortion_criterion(messages, decoded_messages)
             images_loss = image_distortion_criterion(images, encoded_images)
 
-            discriminator_prediction = discriminator(encoded_images.detach())
+            discriminator_prediction = discriminator(encoded_images)
             adversarial_loss_enc = adversarial_criterion(discriminator_prediction,
                                                          torch.full((images.shape[0], 1), 1.).to(device))
 
-            hidden_loss = images_loss + adversarial_loss_enc + messages_loss
+            hidden_loss = (distortion_loss_weight * images_loss +
+                           adversarial_loss_weight * adversarial_loss_enc +
+                           messages_loss)
             hidden_loss.backward()
             hidden_optimizer.step()
 
