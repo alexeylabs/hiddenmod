@@ -3,6 +3,7 @@ import numpy as np
 from torch import nn
 from torchvision import transforms
 from tqdm import tqdm
+import time
 
 from model.discriminator import Discriminator
 from model.hidden import Hidden
@@ -90,6 +91,7 @@ def train(hidden: Hidden, config, train_loader, val_loader):
 
         print('validation_ber:    ', validate(hidden, val_loader, msg_length, device))
         print()
+        time.sleep(1)
 
         save_examples(encoded_images, str(epoch) + '_encoded.jpg')
         save_model(hidden, config['experiment_name']+str(epoch)+'.pth')
