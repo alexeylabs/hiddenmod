@@ -45,7 +45,7 @@ class CenterCrop(nn.Module):
     def forward(self, image):
         crop_size = random.randrange(int(self.crop_min*image.shape[-1]),
                                      int(self.crop_max*image.shape[-1]))
-        noised_image = transforms.CenterCrop(crop_size)(image)
+        noised_image = F.center_crop(image, crop_size)
         return noised_image
 
 
