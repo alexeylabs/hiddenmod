@@ -12,11 +12,13 @@ class Hidden(nn.Module):
 
         self.encoder = Encoder(num_blocks=config['encoder']['num_blocks'],
                                num_channels=config['encoder']['num_channels'],
-                               message_length=config['message_length']).to(config['device'])
+                               message_length=config['message_length'],
+                               use_bn=config['use_bn']).to(config['device'])
 
         self.decoder = Decoder(num_blocks=config['decoder']['num_blocks'],
                                num_channels=config['decoder']['num_channels'],
-                               message_length=config['message_length']).to(config['device'])
+                               message_length=config['message_length'],
+                               use_bn=config['use_bn']).to(config['device'])
 
         self.noiser = Noiser(config['noiser']).to(config['device'])
 
