@@ -15,8 +15,8 @@ from utils import save_examples, save_model
 
 def train(hidden: Hidden, config, train_loader, val_loader):
 
+    current_time = str(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
     if config['use_tb']:
-        current_time = str(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
         train_log_dir = 'logs/tensorboard/train/' + current_time
         test_log_dir = 'logs/tensorboard/test/' + current_time
         train_summary_writer = summary.create_file_writer(train_log_dir)
