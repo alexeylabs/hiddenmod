@@ -23,7 +23,7 @@ def validate(hidden: Hidden, val_loader, msg_length, device):
             decoded_messages = torch.clip(decoded_messages.detach().round(), 0., 1.).to(device)
             ber = torch.abs(messages - decoded_messages).sum() / (images.shape[0] * msg_length)
             ber_history.append(ber.item())
-            psnr_history.append(peak_signal_noise_ratio(images, encoded_images))
+            psnr_history.append(peak_signal_noise_ratio(images, encoded_images).item())
 
     val_ber = sum(ber_history) / len(ber_history)
     val_psnr = sum(psnr_history) / len(psnr_history)
