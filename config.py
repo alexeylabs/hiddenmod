@@ -8,6 +8,7 @@ config = {'device': 'cuda:0' if torch.cuda.is_available() else 'cpu',
           'use_tb': True,
 
           'use_bn': False,
+
           'encoder': {
               'num_blocks': 7,
               'num_channels': 64

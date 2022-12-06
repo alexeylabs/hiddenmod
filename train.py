@@ -22,6 +22,11 @@ def train(hidden: Hidden, config, train_loader, val_loader):
         train_summary_writer = summary.create_file_writer(train_log_dir)
         test_summary_writer = summary.create_file_writer(test_log_dir)
 
+    if config['use_log']:
+        log_file_name = 'log_' + current_time + '.csv'
+        with open(log_file_name, 'a') as logfile:
+            logfile.write('epoch, img_loss, msg_loss, adv_loss, train_ber, val_ber, val_psnr')
+
     discriminator = Discriminator(num_blocks=config['discriminator']['num_blocks'],
                                   num_channels=config['discriminator']['num_channels'],
                                   use_bn=config['use_bn']).to(config['device'])
@@ -121,6 +126,10 @@ def train(hidden: Hidden, config, train_loader, val_loader):
                 summary.scalar('val_ber', val_ber, step=epoch)
                 summary.scalar('val_psnr', val_psnr, step=epoch)
 
+        if config['use_log']:
+            with open(log_file_name, 'a') as logfile:
+                logfile.write(f'\n{epoch}, {img_loss}, {msg_loss}, {adv_loss}, {train_ber}, {val_ber}, {val_psnr}')
+
         save_examples(images, str(epoch) + '_original.jpg')
         save_examples(encoded_images, str(epoch) + '_encoded.jpg')
-        save_model(hidden, config['experiment_name'] + str(epoch)+'.pth')
+        save_model(hidden, config['experiment_name'] + '_' + str(epoch)+'.pth')
