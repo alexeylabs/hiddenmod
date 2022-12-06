@@ -7,6 +7,7 @@ from validate import validate
 
 
 def main():
+
     hidden = Hidden(config)
     train_loader, val_loader = get_data_loaders(config)
 

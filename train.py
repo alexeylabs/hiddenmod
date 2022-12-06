@@ -4,6 +4,8 @@ from torch import nn
 from torchvision import transforms
 from tqdm import tqdm
 import time
+from datetime import datetime
+from tensorflow import summary
 
 from model.discriminator import Discriminator
 from model.hidden import Hidden
@@ -13,8 +15,16 @@ from utils import save_examples, save_model
 
 def train(hidden: Hidden, config, train_loader, val_loader):
 
+    if config['use_tb']:
+        current_time = str(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
+        train_log_dir = 'logs/tensorboard/train/' + current_time
+        test_log_dir = 'logs/tensorboard/test/' + current_time
+        train_summary_writer = summary.create_file_writer(train_log_dir)
+        test_summary_writer = summary.create_file_writer(test_log_dir)
+
     discriminator = Discriminator(num_blocks=config['discriminator']['num_blocks'],
-                                  num_channels=config['discriminator']['num_channels']).to(config['device'])
+                                  num_channels=config['discriminator']['num_channels'],
+                                  use_bn=config['use_bn']).to(config['device'])
 
     num_epochs = config['train']['epochs']
     msg_length = config['message_length']
@@ -30,7 +40,7 @@ def train(hidden: Hidden, config, train_loader, val_loader):
     hidden_optimizer = torch.optim.Adam(hidden.parameters())
     discriminator_optimizer = torch.optim.Adam(discriminator.parameters())
 
-    for epoch in tqdm(range(num_epochs)):
+    for epoch in tqdm(range(1, num_epochs+1)):
 
         image_distortion_history = []
         message_distortion_history = []
@@ -84,14 +94,33 @@ def train(hidden: Hidden, config, train_loader, val_loader):
             ber_history.append(ber.item())
 
         print()
-        print('image_distortion:  ', sum(image_distortion_history) / len(image_distortion_history))
-        print('message_distortion:', sum(message_distortion_history) / len(message_distortion_history))
-        print('adversarial:       ', sum(adversarial_history) / len(adversarial_history))
-        print('ber:               ', sum(ber_history) / len(ber_history))
+        img_loss = sum(image_distortion_history) / len(image_distortion_history)
+        msg_loss = sum(message_distortion_history) / len(message_distortion_history)
+        adv_loss = sum(adversarial_history) / len(adversarial_history)
+        train_ber = sum(ber_history) / len(ber_history)
 
-        print('validation_ber:    ', validate(hidden, val_loader, msg_length, device))
+        val_ber, val_psnr = validate(hidden, val_loader, msg_length, device)
+
+        print('image_distortion:  ', img_loss)
+        print('message_distortion:', msg_loss)
+        print('adversarial:       ', adv_loss)
+        print('train_ber:         ', train_ber)
+
+        print('validation_ber:    ', val_ber)
+        print('validation_psnr:   ', val_psnr)
         print()
         time.sleep(1)
 
+        if config['use_tb']:
+            with train_summary_writer.as_default():
+                summary.scalar('img_loss', img_loss, step=epoch)
+                summary.scalar('msg_loss', msg_loss, step=epoch)
+                summary.scalar('adv_loss', adv_loss, step=epoch)
+                summary.scalar('train_ber', train_ber, step=epoch)
+            with test_summary_writer.as_default():
+                summary.scalar('val_ber', val_ber, step=epoch)
+                summary.scalar('val_psnr', val_psnr, step=epoch)
+
+        save_examples(images, str(epoch) + '_original.jpg')
         save_examples(encoded_images, str(epoch) + '_encoded.jpg')
-        save_model(hidden, config['experiment_name']+str(epoch)+'.pth')
+        save_model(hidden, config['experiment_name'] + str(epoch)+'.pth')
