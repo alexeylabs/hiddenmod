@@ -5,9 +5,8 @@ config = {'device': 'cuda:0' if torch.cuda.is_available() else 'cpu',
           'message_length': 30,
           'image_size': 128,
 
-          'num_workers': 2,
-          'pin_memory': True,
-
+          'num_workers': 0,
+          'pin_memory': False,
           'use_log': True,
           'use_tb': False,
 
