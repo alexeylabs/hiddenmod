@@ -31,7 +31,7 @@ def train(hidden: Hidden, config, train_loader, val_loader):
 
     discriminator = Discriminator(num_blocks=config['discriminator']['num_blocks'],
                                   num_channels=config['discriminator']['num_channels'],
-                                  use_bn=config['use_bn']).to(config['device'])
+                                  use_bn=config['discriminator']['use_bn']).to(config['device'])
 
     num_epochs = config['train']['epochs']
     msg_length = config['message_length']

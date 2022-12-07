@@ -10,19 +10,20 @@ config = {'device': 'cuda:0' if torch.cuda.is_available() else 'cpu',
           'use_log': True,
           'use_tb': False,
 
-          'use_bn': True,
-
           'encoder': {
               'num_blocks': 7,
-              'num_channels': 64
+              'num_channels': 64,
+              'use_bn': True,
           },
           'decoder': {
               'num_blocks': 4,
-              'num_channels': 64
+              'num_channels': 64,
+              'use_bn': True,
           },
           'discriminator': {
               'num_blocks': 3,
-              'num_channels': 64
+              'num_channels': 64,
+              'use_bn': True,
           },
           'noiser': {
               'identity': None,
