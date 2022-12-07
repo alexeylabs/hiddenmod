@@ -9,7 +9,7 @@ import torch
 
 class ImageDataset(Dataset):
     def __init__(self, images_path, size):
-        self.filenames = glob.glob(images_path + '/**/*.jpg')
+        self.filenames = glob.glob(images_path + '/**/*.jpg', recursive=True)
         print('Found files:', len(self.filenames))
         self.transforms = transforms.Compose([
             transforms.Resize(size),
