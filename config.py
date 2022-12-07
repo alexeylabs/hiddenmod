@@ -1,13 +1,16 @@
 import torch
 
 config = {'device': 'cuda:0' if torch.cuda.is_available() else 'cpu',
-          'experiment_name': 'no_bn',
+          'experiment_name': 'base',
           'message_length': 30,
           'image_size': 128,
+          'num_workers': 2,
+          'pin_memory': True,
+
           'use_log': True,
           'use_tb': True,
 
-          'use_bn': False,
+          'use_bn': True,
 
           'encoder': {
               'num_blocks': 7,

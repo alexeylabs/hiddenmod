@@ -33,13 +33,17 @@ def get_data_loaders(config):
                                  config['image_size'])
     train_loader = DataLoader(train_dataset,
                               batch_size=config['train']['batch_size'],
-                              shuffle=True)
+                              shuffle=True,
+                              num_workers=num_workers,
+                              pin_memory=True)
 
     valid_dataset = ImageDataset(config['train']['val_images'],
                                  config['image_size'])
     valid_loader = DataLoader(valid_dataset,
                               batch_size=config['train']['batch_size'],
-                              shuffle=False)
+                              shuffle=False,
+                              num_workers=config['num_workers'],
+                              pin_memory=config['pin_memory'])
     return train_loader, valid_loader
 
 
