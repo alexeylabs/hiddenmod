@@ -9,7 +9,7 @@ config = {'device': 'cuda:0' if torch.cuda.is_available() else 'cpu',
           'pin_memory': True,
 
           'use_log': True,
-          'use_tb': True,
+          'use_tb': False,
 
           'use_bn': True,
 
